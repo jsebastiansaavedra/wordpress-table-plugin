@@ -16,6 +16,9 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly.
 }
 
+/**
+ * Plugin Initialization
+ */
 add_action( 'init', 'tde_plugin_init' );
 add_action( 'rest_api_init', 'tde_register_rest_routes' );
 
@@ -25,6 +28,9 @@ function tde_plugin_init() {
     add_shortcode( 'my_list', 'tde_shortcode_list' );
 }
 
+/**
+ * Function that creates the table if not exists
+ */
 function maybe_create_my_table() {
     global $wpdb;
     $table_name = $wpdb->prefix . 'theme_developer_plugin';
@@ -42,6 +48,9 @@ function maybe_create_my_table() {
     dbDelta( $sql );
 }
 
+/**
+ * Function that shows the "Insert a new value" form via shortcode
+ */
 function tde_shortcode_form() {
     if ( $_SERVER['REQUEST_METHOD'] === 'POST' && isset( $_POST['value'] ) ) {
         insert_data_to_my_table( sanitize_text_field( $_POST['value'] ) );
@@ -60,6 +69,9 @@ function tde_shortcode_form() {
     return ob_get_clean();
 }
 
+/**
+ * Function that shows the search bar and the Records via shortcode
+ */
 function tde_shortcode_list() {
     $output = '<form method="GET">
         <label for="search">Search:</label>
@@ -95,6 +107,9 @@ function tde_shortcode_list() {
     return $output;
 }
 
+/**
+ * This function runs the select to the database
+ */
 function get_my_table_data( $search = '' ) {
     global $wpdb;
     $table_name = $wpdb->prefix . 'theme_developer_plugin';
@@ -106,6 +121,9 @@ function get_my_table_data( $search = '' ) {
     return $wpdb->get_results( $sql );
 }
 
+/**
+ * This function executes the query to insert into the database
+ */
 function insert_data_to_my_table( $name ) {
     global $wpdb;
     $table_name = $wpdb->prefix . 'theme_developer_plugin';
@@ -121,4 +139,7 @@ function insert_data_to_my_table( $name ) {
     );
 }
 
+/**
+ * Requieres the API file to initialize it with the plugin
+ */
 require_once plugin_dir_path( __FILE__ ) . 'includes/rest-api.php';
